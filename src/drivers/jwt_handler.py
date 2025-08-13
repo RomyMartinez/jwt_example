@@ -15,5 +15,5 @@ class JwtHandler:
        return token
     
     def decode_jwt_token(self, token: str) -> dict:
-        token_info = jwt.decode(token, key="secret", algorithms="HS256")
+        token_info = jwt.decode(token, key=jwt_infos["KEY"], algorithms=jwt_infos["ALGORITHM"])
         return token_info
