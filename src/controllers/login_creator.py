@@ -3,6 +3,8 @@ from src.drivers.jwt_handler import JwtHandler
 from src.drivers.passord_handler import PasswordHandler
 from typing import Dict, Tuple
 from src.controllers.interfaces.login_creator import LoginCreatorInterface
+from src.errors.types.http_bad_request import HttpBadRequestError
+from src.errors.types.http_not_found import HttpNotFoundError
 
 class LoginCreator(LoginCreatorInterface):
     def __init__(self, user_repository: UserRepositoryInterface) -> None:
@@ -22,14 +24,14 @@ class LoginCreator(LoginCreatorInterface):
     def __get_user_by_username(self, username: str) -> Tuple[int, str, str]:
         user = self.__user_repository.get_user_by_username(username)
         if user is None:
-            raise Exception("User not found")
+            raise HttpNotFoundError("User not found")
 
         return user
     
     def __validate_password(self, password: str, hashed_password: str) -> None:
         is_password_valid = self.__password_handler.check_password(password, hashed_password)
         if not is_password_valid:
-            raise Exception("Invalid password")
+            raise HttpBadRequestError("Invalid password")
         
     def __create_jwt_token(self, user_id: int) -> str:
         payload = {
